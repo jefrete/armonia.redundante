@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Armonía Musical</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #050505;
+      color: #f5f5f5;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      margin: auto;
+      padding: 14px 10px 20px;
+    }
+
+    .title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 2px;
+    }
+
+    .subtitle {
+      color: #777;
+      font-size: .72rem;
+      margin-bottom: 12px;
+    }
+
+    .tonic-box {
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 14px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .tonic-label {
+      color: #777;
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 5px;
+    }
+
+    select {
+      background: #181818 !important;
+      color: white !important;
+      border: 1px solid #333 !important;
+      border-radius: 10px !important;
+      font-weight: 700 !important;
+      font-size: 1rem !important;
+    }
+
+    .scale {
+      background: #0d0d0d;
+      border: 1px solid #202020;
+      border-radius: 12px;
+      padding: 9px;
+      margin-bottom: 6px;
+    }
+
+    .scale-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .scale-name {
+      font-weight: 800;
+      font-size: .78rem;
+    }
+
+    .scale-type {
+      color: #666;
+      font-size: .62rem;
+    }
+
+    .notes {
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+
+    .note {
+      min-width: 27px;
+      height: 25px;
+      padding: 0 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #171717;
+      border-radius: 6px;
+      font-size: .67rem;
+      font-weight: 700;
+      color: #bbb;
+    }
+
+    .note.root {
+      background: #fff;
+      color: #000;
+    }
+
+    .degrees {
+      display: flex;
+      gap: 3px;
+      margin-top: 5px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .degrees::-webkit-scrollbar {
+      display: none;
+    }
+
+    .degree {
+      flex: 1;
+      min-width: 42px;
+      text-align: center;
+      background: #151515;
+      border-radius: 5px;
+      padding: 3px 2px;
+      font-size: .58rem;
+      color: #999;
+      white-space: nowrap;
+    }
+
+    .degree strong {
+      display: block;
+      color: #eee;
+      font-size: .66rem;
+    }
+
+    .section-title {
+      color: #555;
+      font-size: .62rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin: 10px 2px 5px;
+    }
+
+    .formula {
+      color: #777;
+      font-size: .6rem;
+      margin-top: 5px;
+    }
+
+    @media (max-height: 700px) {
+      .app {
+        padding-top: 8px;
+      }
+
+      .title {
+        font-size: 1.25rem;
+      }
+
+      .subtitle {
+        margin-bottom: 7px;
+      }
+
+      .scale {
+        padding: 6px 8px;
+        margin-bottom: 4px;
+      }
+
+      .note {
+        height: 22px;
+        min-width: 25px;
+      }
+
+      .degrees {
+        margin-top: 3px;
+      }
+
+      .section-title {
+        margin-top: 6px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="title">Armonía</div>
+  <div class="subtitle">Elegí una tónica y explorá sus escalas</div>
+
+  <div class="tonic-box">
+    <div class="tonic-label">Tónica</div>
+
+    <select id="tonic" class="form-select">
+      <option value="C">C</option>
+      <option value="C#">C# / Db</option>
+      <option value="D">D</option>
+      <option value="D#">D# / Eb</option>
+      <option value="E">E</option>
+      <option value="F">F</option>
+      <option value="F#">F# / Gb</option>
+      <option value="G">G</option>
+      <option value="G#">G# / Ab</option>
+      <option value="A">A</option>
+      <option value="A#">A# / Bb</option>
+      <option value="B">B</option>
+    </select>
+  </div>
+
+  <div class="section-title">Escalas</div>
+
+  <div id="scales"></div>
+
+</div>
+
+<script>
+
+const NOTES = [
+  "C","C#","D","D#","E","F",
+  "F#","G","G#","A","A#","B"
+];
+
+const SCALES = [
+  {
+    name: "Mayor",
+    type: "Jónico",
+    intervals: [0,2,4,5,7,9,11],
+    qualities: ["maj","min","min","maj","maj","min","dim"]
+  },
+  {
+    name: "Menor natural",
+    type: "Eólico",
+    intervals: [0,2,3,5,7,8,10],
+    qualities: ["min","dim","maj","min","min","maj","maj"]
+  },
+  {
+    name: "Menor armónica",
+    type: "Armónica",
+    intervals: [0,2,3,5,7,8,11],
+    qualities: ["min","dim","aug","min","maj","maj","dim"]
+  },
+  {
+    name: "Menor melódica",
+    type: "Melódica",
+    intervals: [0,2,3,5,7,9,11],
+    qualities: ["min","min","aug","maj","maj","dim","dim"]
+  }
+];
+
+const ROMAN = [
+  "I","II","III","IV","V","VI","VII"
+];
+
+const tonicSelect = document.getElementById("tonic");
+const scalesContainer = document.getElementById("scales");
+
+function noteAt(root, interval) {
+  const index = NOTES.indexOf(root);
+  return NOTES[(index + interval) % 12];
+}
+
+function chordName(note, quality) {
+
+  const symbols = {
+    maj: "",
+    min: "m",
+    dim: "°",
+    aug: "+"
+  };
+
+  return note + symbols[quality];
+}
+
+function render() {
+
+  const root = tonicSelect.value;
+
+  scalesContainer.innerHTML = "";
+
+  SCALES.forEach(scale => {
+
+    const notes = scale.intervals.map(i => noteAt(root, i));
+
+    const chords = notes.map((note, i) => ({
+      roman: ROMAN[i],
+      chord: chordName(note, scale.qualities[i])
+    }));
+
+    const card = document.createElement("div");
+    card.className = "scale";
+
+    card.innerHTML = `
+      <div class="scale-head">
+        <div class="scale-name">${scale.name}</div>
+        <div class="scale-type">${scale.type}</div>
+      </div>
+
+      <div class="notes">
+        ${notes.map((note, i) => `
+          <div class="note ${i === 0 ? "root" : ""}">
+            ${note}
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="degrees">
+        ${chords.map(item => `
+          <div class="degree">
+            <strong>${item.chord}</strong>
+            ${item.roman}
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="formula">
+        ${scale.intervals.join(" – ")}
+      </div>
+    `;
+
+    scalesContainer.appendChild(card);
+  });
+}
+
+tonicSelect.addEventListener("change", render);
+
+render();
+
+</script>
+
+</body>
+</html>
