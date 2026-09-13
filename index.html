@@ -1,26 +1,36 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Armonizador Modal</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+<link
+href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600;700&display=swap"
+rel="stylesheet">
+
 
 <style>
 
 :root{
     --bg:#050505;
     --card:#0d0d0d;
-    --border:#222;
+    --card2:#111;
+    --border:#242424;
     --text:#f1eee8;
     --muted:#777;
     --accent:#d6ff3f;
+    --danger:#ff5555;
 }
 
 *{
@@ -31,24 +41,24 @@ body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family:'DM Mono', monospace;
+    font-family:'DM Mono',monospace;
     min-height:100vh;
     overflow-x:hidden;
 }
 
 .app{
-    max-width:600px;
+    max-width:650px;
     margin:auto;
-    padding:18px 14px 30px;
+    padding:18px 14px 40px;
 }
 
 header{
     text-align:center;
-    margin-bottom:18px;
+    margin-bottom:20px;
 }
 
 h1{
-    font-family:'Playfair Display', serif;
+    font-family:'Playfair Display',serif;
     font-size:2rem;
     margin:0;
     letter-spacing:-1px;
@@ -56,20 +66,23 @@ h1{
 
 .subtitle{
     color:var(--muted);
-    font-size:.72rem;
+    font-size:.7rem;
     margin-top:5px;
     letter-spacing:1px;
     text-transform:uppercase;
 }
 
-/* SELECTOR */
+
+/* ================================
+   SELECTOR
+================================ */
 
 .note-selector{
     background:#111;
     border:1px solid var(--border);
     border-radius:18px;
     padding:14px;
-    margin-bottom:16px;
+    margin-bottom:14px;
 }
 
 .selector-label{
@@ -82,7 +95,7 @@ h1{
 
 .notes{
     display:grid;
-    grid-template-columns:repeat(6, 1fr);
+    grid-template-columns:repeat(6,1fr);
     gap:7px;
 }
 
@@ -96,6 +109,11 @@ h1{
     transition:.15s;
 }
 
+.note-btn:hover{
+    border-color:#555;
+    color:white;
+}
+
 .note-btn:active{
     transform:scale(.95);
 }
@@ -107,26 +125,54 @@ h1{
     font-weight:bold;
 }
 
-/* CARDS */
 
-.mode-card{
+/* ================================
+   SECCIONES
+================================ */
+
+.section{
     background:var(--card);
     border:1px solid var(--border);
-    border-radius:14px;
-    padding:11px 12px;
-    margin-bottom:7px;
-    transition:.2s;
+    border-radius:15px;
+    padding:13px;
+    margin-bottom:12px;
 }
 
-.mode-card:hover{
-    border-color:#444;
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.section-title strong{
+    font-size:.75rem;
+    letter-spacing:1px;
+}
+
+.section-title span{
+    font-size:.6rem;
+    color:var(--muted);
+}
+
+
+/* ================================
+   MODOS
+================================ */
+
+.mode-card{
+    background:#0b0b0b;
+    border:1px solid #1e1e1e;
+    border-radius:12px;
+    padding:10px;
+    margin-bottom:7px;
 }
 
 .mode-name{
     color:var(--accent);
     font-size:.68rem;
     letter-spacing:1px;
-    margin-bottom:6px;
+    margin-bottom:7px;
     font-weight:bold;
 }
 
@@ -138,16 +184,183 @@ h1{
 
 .chord{
     background:#151515;
-    border:1px solid #252525;
-    border-radius:6px;
-    padding:4px 7px;
-    font-size:.78rem;
-    color:#e8e8e8;
+    border:1px solid #292929;
+    border-radius:7px;
+    padding:5px 8px;
+    font-size:.75rem;
+    color:#eee;
+    cursor:pointer;
+    transition:.15s;
 }
+
+.chord:hover{
+    border-color:var(--accent);
+    color:var(--accent);
+    transform:translateY(-1px);
+}
+
+.chord:active{
+    transform:scale(.94);
+}
+
+
+/* ================================
+   REDUCCIÓN
+================================ */
+
+.reduction{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+}
+
+.reduced-chord{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:#151515;
+    border:1px solid #292929;
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.reduced-name{
+    padding:6px 9px;
+    cursor:pointer;
+    font-size:.76rem;
+}
+
+.reduced-name:hover{
+    color:var(--accent);
+}
+
+.add-mini{
+    border:0;
+    border-left:1px solid #292929;
+    background:#1b1b1b;
+    color:var(--accent);
+    padding:5px 8px;
+    cursor:pointer;
+}
+
+.add-mini:hover{
+    background:var(--accent);
+    color:#000;
+}
+
+
+/* ================================
+   PROGRESIÓN
+================================ */
+
+.progression{
+    min-height:62px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:7px;
+    padding:10px;
+    background:#080808;
+    border:1px dashed #292929;
+    border-radius:12px;
+}
+
+.progression.empty{
+    justify-content:center;
+    color:#555;
+    font-size:.7rem;
+}
+
+.progression-chord{
+    display:flex;
+    align-items:center;
+    background:#171717;
+    border:1px solid #333;
+    border-radius:9px;
+    overflow:hidden;
+}
+
+.progression-name{
+    padding:8px 10px;
+    cursor:pointer;
+    font-size:.8rem;
+}
+
+.progression-name:hover{
+    color:var(--accent);
+}
+
+.delete-chord{
+    border:0;
+    border-left:1px solid #333;
+    background:#101010;
+    color:#777;
+    padding:7px 9px;
+    cursor:pointer;
+}
+
+.delete-chord:hover{
+    background:var(--danger);
+    color:white;
+}
+
+
+/* ================================
+   BOTONES
+================================ */
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-top:10px;
+}
+
+button.control{
+    border:1px solid #303030;
+    background:#111;
+    color:#ddd;
+    border-radius:10px;
+    padding:10px;
+    font-family:inherit;
+    font-size:.7rem;
+    cursor:pointer;
+    transition:.15s;
+}
+
+button.control:hover{
+    border-color:var(--accent);
+    color:var(--accent);
+}
+
+button.control.primary{
+    background:var(--accent);
+    color:#050505;
+    border-color:var(--accent);
+    font-weight:bold;
+}
+
+button.control.primary:hover{
+    filter:brightness(1.1);
+}
+
+
+/* ================================
+   INFO
+================================ */
+
+.counter{
+    color:var(--accent);
+}
+
+
+/* ================================
+   FOOTER
+================================ */
 
 footer{
     text-align:center;
-    margin-top:18px;
+    margin-top:20px;
     color:#444;
     font-size:.6rem;
 }
@@ -161,10 +374,19 @@ footer{
 <div class="app">
 
 <header>
+
     <h1>Armonizador</h1>
-    <div class="subtitle">Modos · Escalas · Armonía</div>
+
+    <div class="subtitle">
+        Modos · Escalas · Armonía · Progresiones
+    </div>
+
 </header>
 
+
+<!-- ================================
+     RAÍZ
+================================ -->
 
 <div class="note-selector">
 
@@ -177,7 +399,124 @@ footer{
 </div>
 
 
-<div id="harmonies"></div>
+<!-- ================================
+     MODOS
+================================ -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        <strong>
+            MODOS
+        </strong>
+
+        <span>
+            tocá un acorde
+        </span>
+
+    </div>
+
+    <div id="harmonies"></div>
+
+</div>
+
+
+<!-- ================================
+     REDUCCIÓN
+================================ -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        <strong>
+            REDUCCIÓN ARMÓNICA
+        </strong>
+
+        <span>
+            <span class="counter" id="reductionCount">0</span>
+            acordes únicos
+        </span>
+
+    </div>
+
+    <div
+        class="reduction"
+        id="reduction">
+    </div>
+
+</div>
+
+
+<!-- ================================
+     PROGRESIÓN
+================================ -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        <strong>
+            PROGRESIÓN
+        </strong>
+
+        <span>
+            agregá / eliminá
+        </span>
+
+    </div>
+
+
+    <div
+        id="progression"
+        class="progression empty">
+
+        Generá una progresión o agregá acordes ↓
+
+    </div>
+
+
+    <div class="controls">
+
+        <button
+            class="control primary"
+            onclick="randomProgression()">
+
+            🎲 PROGRESIÓN RANDOM
+
+        </button>
+
+
+        <button
+            class="control"
+            onclick="playProgression()">
+
+            ▶ REPRODUCIR
+
+        </button>
+
+
+        <button
+            class="control"
+            onclick="stopProgression()">
+
+            ■ STOP
+
+        </button>
+
+
+        <button
+            class="control"
+            onclick="clearProgression()">
+
+            ✕ BORRAR TODO
+
+        </button>
+
+    </div>
+
+</div>
 
 
 <footer>
@@ -187,11 +526,12 @@ footer{
 </div>
 
 
+
 <script>
 
-/* ==========================================
+/* ==================================================
    NOTAS
-========================================== */
+================================================== */
 
 const notes = [
     "C","C#","D","Eb","E","F",
@@ -199,13 +539,18 @@ const notes = [
 ];
 
 
-/* ==========================================
-   ESTRUCTURAS ARMÓNICAS
+/* ==================================================
+   MODOS
 
-   Cada número representa semitonos desde
-   la nota raíz.
+   intervalos = semitonos
 
-========================================== */
+   qualities:
+   ""     mayor
+   "m"    menor
+   "dim"  disminuido
+   "+"    aumentado
+
+================================================== */
 
 const modes = [
 
@@ -266,18 +611,26 @@ const modes = [
 ];
 
 
-/* ==========================================
+/* ==================================================
    ESTADO
-========================================== */
+================================================== */
 
 let root = "C";
 
+let reducedChords = [];
 
-/* ==========================================
+let progression = [];
+
+let audioContext = null;
+
+let activeOscillators = [];
+
+
+/* ==================================================
    OBTENER NOTA
-========================================== */
+================================================== */
 
-function getNote(rootNote, semitones){
+function getNote(rootNote,semitones){
 
     const index = notes.indexOf(rootNote);
 
@@ -288,9 +641,197 @@ function getNote(rootNote, semitones){
 }
 
 
-/* ==========================================
-   RENDER BOTONES
-========================================== */
+/* ==================================================
+   CONVERTIR ACORDE A NOTAS
+
+   Sirve para que el WebAudio pueda tocarlo.
+
+================================================== */
+
+function chordIntervals(quality){
+
+    if(quality === "m"){
+        return [0,3,7];
+    }
+
+    if(quality === "dim"){
+        return [0,3,6];
+    }
+
+    if(quality === "+"){
+        return [0,4,8];
+    }
+
+    return [0,4,7];
+
+}
+
+
+/* ==================================================
+   FRECUENCIA
+
+   C4 = 261.63 Hz
+
+================================================== */
+
+function frequencyFromNote(note){
+
+    const index = notes.indexOf(note);
+
+    const cIndex = notes.indexOf("C");
+
+    let semitones = index - cIndex;
+
+    if(semitones < 0){
+        semitones += 12;
+    }
+
+    return 261.63 * Math.pow(2,semitones/12);
+
+}
+
+
+/* ==================================================
+   TOCAR ACORDE
+================================================== */
+
+function playChord(chordData){
+
+    if(!audioContext){
+
+        audioContext =
+            new(window.AudioContext ||
+            window.webkitAudioContext)();
+
+    }
+
+    stopChord();
+
+    const intervals =
+        chordIntervals(chordData.quality);
+
+    const rootIndex =
+        notes.indexOf(chordData.note);
+
+    intervals.forEach(interval => {
+
+        let noteIndex =
+            (rootIndex + interval) % 12;
+
+        let note =
+            notes[noteIndex];
+
+        let frequency =
+            frequencyFromNote(note);
+
+        /*
+            Algunas notas deben sonar
+            una octava arriba para que
+            el acorde tenga más cuerpo.
+        */
+
+        let octave = 1;
+
+        if(interval >= 7){
+            octave = 2;
+        }
+
+        frequency *= octave;
+
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+
+        oscillator.type = "triangle";
+
+        oscillator.frequency.value =
+            frequency;
+
+
+        const now =
+            audioContext.currentTime;
+
+
+        gain.gain.setValueAtTime(
+            0,
+            now
+        );
+
+        gain.gain.linearRampToValueAtTime(
+            0.18,
+            now + 0.03
+        );
+
+        gain.gain.linearRampToValueAtTime(
+            0.10,
+            now + 0.35
+        );
+
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+
+        oscillator.start();
+
+        activeOscillators.push({
+            oscillator,
+            gain
+        });
+
+    });
+
+}
+
+
+/* ==================================================
+   DETENER ACORDE
+================================================== */
+
+function stopChord(){
+
+    if(!audioContext){
+        return;
+    }
+
+    const now =
+        audioContext.currentTime;
+
+    activeOscillators.forEach(item => {
+
+        item.gain.gain.cancelScheduledValues(now);
+
+        item.gain.gain.setValueAtTime(
+            item.gain.gain.value,
+            now
+        );
+
+        item.gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            now + 0.15
+        );
+
+        item.oscillator.stop(
+            now + 0.17
+        );
+
+    });
+
+    activeOscillators = [];
+
+}
+
+
+/* ==================================================
+   BOTONES DE NOTAS
+================================================== */
 
 function renderNotes(){
 
@@ -298,6 +839,7 @@ function renderNotes(){
         document.getElementById("notes");
 
     container.innerHTML = "";
+
 
     notes.forEach(note => {
 
@@ -310,14 +852,23 @@ function renderNotes(){
 
         btn.innerText = note;
 
+
         btn.onclick = () => {
 
             root = note;
 
+            progression = [];
+
             renderNotes();
+
             renderHarmonies();
 
+            buildReduction();
+
+            renderProgression();
+
         };
+
 
         container.appendChild(btn);
 
@@ -326,9 +877,9 @@ function renderNotes(){
 }
 
 
-/* ==========================================
-   RENDER ARMONÍAS
-========================================== */
+/* ==================================================
+   RENDER MODOS
+================================================== */
 
 function renderHarmonies(){
 
@@ -337,18 +888,21 @@ function renderHarmonies(){
 
     container.innerHTML = "";
 
+
     modes.forEach(mode => {
 
         const card =
             document.createElement("div");
 
-        card.className = "mode-card";
+        card.className =
+            "mode-card";
 
 
         const name =
             document.createElement("div");
 
-        name.className = "mode-name";
+        name.className =
+            "mode-name";
 
         name.innerText =
             root + " " + mode.name;
@@ -357,25 +911,42 @@ function renderHarmonies(){
         const chords =
             document.createElement("div");
 
-        chords.className = "chords";
+        chords.className =
+            "chords";
 
 
         mode.intervals.forEach(
-            (interval, i) => {
+            (interval,i) => {
 
                 const note =
-                    getNote(root, interval);
+                    getNote(
+                        root,
+                        interval
+                    );
 
                 const quality =
                     mode.qualities[i];
 
+
                 const chord =
                     document.createElement("span");
 
-                chord.className = "chord";
+                chord.className =
+                    "chord";
 
                 chord.innerText =
                     note + quality;
+
+
+                chord.onclick = () => {
+
+                    playChord({
+                        note:note,
+                        quality:quality
+                    });
+
+                };
+
 
                 chords.appendChild(chord);
 
@@ -384,6 +955,7 @@ function renderHarmonies(){
 
 
         card.appendChild(name);
+
         card.appendChild(chords);
 
         container.appendChild(card);
@@ -393,14 +965,435 @@ function renderHarmonies(){
 }
 
 
-/* ==========================================
+/* ==================================================
+   CREAR REDUCCIÓN
+
+   Acá está el corazón del sistema.
+
+   Set() elimina automáticamente
+   los acordes repetidos.
+
+================================================== */
+
+function buildReduction(){
+
+    const unique =
+        new Map();
+
+
+    modes.forEach(mode => {
+
+        mode.intervals.forEach(
+            (interval,i) => {
+
+                const note =
+                    getNote(
+                        root,
+                        interval
+                    );
+
+                const quality =
+                    mode.qualities[i];
+
+
+                const id =
+                    note + quality;
+
+
+                /*
+                    Si todavía no existe,
+                    lo guardamos.
+
+                    Si ya apareció,
+                    NO se agrega nuevamente.
+                */
+
+                if(!unique.has(id)){
+
+                    unique.set(id,{
+                        id:id,
+                        note:note,
+                        quality:quality
+                    });
+
+                }
+
+            }
+        );
+
+    });
+
+
+    reducedChords =
+        Array.from(unique.values());
+
+
+    renderReduction();
+
+}
+
+
+/* ==================================================
+   RENDER REDUCCIÓN
+================================================== */
+
+function renderReduction(){
+
+    const container =
+        document.getElementById("reduction");
+
+    container.innerHTML = "";
+
+
+    document.getElementById(
+        "reductionCount"
+    ).innerText =
+        reducedChords.length;
+
+
+    reducedChords.forEach(chord => {
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.className =
+            "reduced-chord";
+
+
+        const name =
+            document.createElement("div");
+
+        name.className =
+            "reduced-name";
+
+        name.innerText =
+            chord.id;
+
+
+        /*
+            Tocamos el acorde
+            al hacer click.
+        */
+
+        name.onclick = () => {
+
+            playChord(chord);
+
+        };
+
+
+        const add =
+            document.createElement("button");
+
+        add.className =
+            "add-mini";
+
+        add.innerText =
+            "+";
+
+
+        /*
+            Agrega el acorde
+            a la progresión.
+        */
+
+        add.onclick = () => {
+
+            addToProgression(chord);
+
+        };
+
+
+        wrapper.appendChild(name);
+
+        wrapper.appendChild(add);
+
+        container.appendChild(wrapper);
+
+    });
+
+}
+
+
+/* ==================================================
+   AGREGAR A PROGRESIÓN
+================================================== */
+
+function addToProgression(chord){
+
+    progression.push(chord);
+
+    renderProgression();
+
+}
+
+
+/* ==================================================
+   BORRAR ACORDE DE PROGRESIÓN
+================================================== */
+
+function removeFromProgression(index){
+
+    progression.splice(index,1);
+
+    renderProgression();
+
+}
+
+
+/* ==================================================
+   RENDER PROGRESIÓN
+================================================== */
+
+function renderProgression(){
+
+    const container =
+        document.getElementById("progression");
+
+
+    container.innerHTML = "";
+
+
+    if(progression.length === 0){
+
+        container.classList.add("empty");
+
+        container.innerText =
+            "Generá una progresión o agregá acordes ↓";
+
+        return;
+
+    }
+
+
+    container.classList.remove("empty");
+
+
+    progression.forEach(
+        (chord,index) => {
+
+            const wrapper =
+                document.createElement("div");
+
+            wrapper.className =
+                "progression-chord";
+
+
+            const name =
+                document.createElement("div");
+
+            name.className =
+                "progression-name";
+
+            name.innerText =
+                chord.id;
+
+
+            /*
+                Tocar un acorde individual.
+            */
+
+            name.onclick = () => {
+
+                playChord(chord);
+
+            };
+
+
+            const remove =
+                document.createElement("button");
+
+            remove.className =
+                "delete-chord";
+
+            remove.innerText =
+                "×";
+
+
+            remove.onclick = () => {
+
+                removeFromProgression(index);
+
+            };
+
+
+            wrapper.appendChild(name);
+
+            wrapper.appendChild(remove);
+
+            container.appendChild(wrapper);
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   PROGRESIÓN RANDOM
+================================================== */
+
+function randomProgression(){
+
+    stopProgression();
+
+
+    if(reducedChords.length === 0){
+        return;
+    }
+
+
+    /*
+        Elegimos entre 3 y 5 acordes.
+
+        Se pueden repetir algunos,
+        porque una progresión musical
+        puede perfectamente repetir
+        un acorde.
+    */
+
+    const length =
+        Math.floor(
+            Math.random() * 3
+        ) + 3;
+
+
+    progression = [];
+
+
+    for(let i=0;i<length;i++){
+
+        const randomIndex =
+            Math.floor(
+                Math.random() *
+                reducedChords.length
+            );
+
+
+        progression.push(
+            reducedChords[randomIndex]
+        );
+
+    }
+
+
+    renderProgression();
+
+}
+
+
+/* ==================================================
+   REPRODUCIR PROGRESIÓN
+================================================== */
+
+let progressionTimer = null;
+
+let progressionPosition = 0;
+
+
+function playProgression(){
+
+    stopProgression();
+
+
+    if(progression.length === 0){
+        return;
+    }
+
+
+    progressionPosition = 0;
+
+
+    function nextChord(){
+
+        if(
+            progressionPosition >=
+            progression.length
+        ){
+
+            progressionPosition = 0;
+
+            return;
+
+        }
+
+
+        const chord =
+            progression[
+                progressionPosition
+            ];
+
+
+        playChord(chord);
+
+
+        progressionPosition++;
+
+
+        progressionTimer =
+            setTimeout(
+                nextChord,
+                1000
+            );
+
+    }
+
+
+    nextChord();
+
+}
+
+
+/* ==================================================
+   STOP PROGRESIÓN
+================================================== */
+
+function stopProgression(){
+
+    if(progressionTimer){
+
+        clearTimeout(
+            progressionTimer
+        );
+
+        progressionTimer = null;
+
+    }
+
+    stopChord();
+
+}
+
+
+/* ==================================================
+   BORRAR TODO
+================================================== */
+
+function clearProgression(){
+
+    stopProgression();
+
+    progression = [];
+
+    renderProgression();
+
+}
+
+
+/* ==================================================
    INICIAR
-========================================== */
+================================================== */
 
 renderNotes();
+
 renderHarmonies();
+
+buildReduction();
+
+renderProgression();
 
 </script>
 
 </body>
 </html>
+```
