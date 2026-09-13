@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 
@@ -7,10 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Armonizador Modal</title>
-
-<link
-href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-rel="stylesheet">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,6 +94,12 @@ h1{
     gap:7px;
 }
 
+@media (max-width:380px){
+    .notes{
+        grid-template-columns:repeat(4,1fr);
+    }
+}
+
 .note-btn{
     border:1px solid #282828;
     background:#090909;
@@ -106,6 +107,8 @@ h1{
     border-radius:10px;
     padding:9px 2px;
     font-size:.8rem;
+    font-family:inherit;
+    cursor:pointer;
     transition:.15s;
 }
 
@@ -188,6 +191,7 @@ h1{
     border-radius:7px;
     padding:5px 8px;
     font-size:.75rem;
+    font-family:inherit;
     color:#eee;
     cursor:pointer;
     transition:.15s;
@@ -203,6 +207,12 @@ h1{
     transform:scale(.94);
 }
 
+.chord.playing{
+    background:var(--accent);
+    color:#050505;
+    border-color:var(--accent);
+}
+
 
 /* ================================
    REDUCCIÓN
@@ -212,6 +222,12 @@ h1{
     display:flex;
     flex-wrap:wrap;
     gap:6px;
+}
+
+.reduction.empty{
+    color:#555;
+    font-size:.7rem;
+    padding:4px 2px;
 }
 
 .reduced-chord{
@@ -234,11 +250,17 @@ h1{
     color:var(--accent);
 }
 
+.reduced-chord.playing .reduced-name{
+    background:var(--accent);
+    color:#050505;
+}
+
 .add-mini{
     border:0;
     border-left:1px solid #292929;
     background:#1b1b1b;
     color:var(--accent);
+    font-family:inherit;
     padding:5px 8px;
     cursor:pointer;
 }
@@ -278,6 +300,11 @@ h1{
     border:1px solid #333;
     border-radius:9px;
     overflow:hidden;
+    transition:.15s;
+}
+
+.progression-chord.playing{
+    border-color:var(--accent);
 }
 
 .progression-name{
@@ -290,11 +317,17 @@ h1{
     color:var(--accent);
 }
 
+.progression-chord.playing .progression-name{
+    background:var(--accent);
+    color:#050505;
+}
+
 .delete-chord{
     border:0;
     border-left:1px solid #333;
     background:#101010;
     color:#777;
+    font-family:inherit;
     padding:7px 9px;
     cursor:pointer;
 }
@@ -603,9 +636,17 @@ const modes = [
 },
 
 {
+    /*
+        Menor melódica (ascendente).
+
+        OJO: el vi grado es disminuido
+        (no menor) porque se arma sobre
+        6ta mayor + 7ma mayor de la escala.
+        Antes decía "m" por error.
+    */
     name:"MENOR MEL.",
     intervals:[0,2,3,5,7,9,11],
-    qualities:["m","m","+","","","m","dim"]
+    qualities:["m","m","+","","","dim","dim"]
 }
 
 ];
@@ -703,6 +744,17 @@ function playChord(chordData){
             new(window.AudioContext ||
             window.webkitAudioContext)();
 
+    }
+
+    /*
+        Los navegadores pueden arrancar el
+        AudioContext "suspendido" hasta que
+        detectan un gesto del usuario.
+        Lo reanudamos por las dudas.
+    */
+
+    if(audioContext.state === "suspended"){
+        audioContext.resume();
     }
 
     stopChord();
@@ -846,6 +898,8 @@ function renderNotes(){
         const btn =
             document.createElement("button");
 
+        btn.type = "button";
+
         btn.className =
             "note-btn" +
             (note === root ? " active" : "");
@@ -854,6 +908,8 @@ function renderNotes(){
 
 
         btn.onclick = () => {
+
+            stopProgression();
 
             root = note;
 
@@ -929,7 +985,9 @@ function renderHarmonies(){
 
 
                 const chord =
-                    document.createElement("span");
+                    document.createElement("button");
+
+                chord.type = "button";
 
                 chord.className =
                     "chord";
@@ -944,6 +1002,8 @@ function renderHarmonies(){
                         note:note,
                         quality:quality
                     });
+
+                    flashPlaying(chord);
 
                 };
 
@@ -966,11 +1026,30 @@ function renderHarmonies(){
 
 
 /* ==================================================
+   FLASH "SONANDO"
+
+   Marca visualmente el acorde que
+   se acaba de tocar y lo apaga
+   cuando termina el sonido.
+================================================== */
+
+function flashPlaying(el,duration=380){
+
+    el.classList.add("playing");
+
+    setTimeout(() => {
+        el.classList.remove("playing");
+    },duration);
+
+}
+
+
+/* ==================================================
    CREAR REDUCCIÓN
 
    Acá está el corazón del sistema.
 
-   Set() elimina automáticamente
+   Map() elimina automáticamente
    los acordes repetidos.
 
 ================================================== */
@@ -1061,7 +1140,9 @@ function renderReduction(){
 
 
         const name =
-            document.createElement("div");
+            document.createElement("button");
+
+        name.type = "button";
 
         name.className =
             "reduced-name";
@@ -1079,17 +1160,26 @@ function renderReduction(){
 
             playChord(chord);
 
+            flashPlaying(wrapper);
+
         };
 
 
         const add =
             document.createElement("button");
 
+        add.type = "button";
+
         add.className =
             "add-mini";
 
         add.innerText =
             "+";
+
+        add.setAttribute(
+            "aria-label",
+            "Agregar " + chord.id + " a la progresión"
+        );
 
 
         /*
@@ -1178,9 +1268,13 @@ function renderProgression(){
             wrapper.className =
                 "progression-chord";
 
+            wrapper.dataset.index = index;
+
 
             const name =
-                document.createElement("div");
+                document.createElement("button");
+
+            name.type = "button";
 
             name.className =
                 "progression-name";
@@ -1197,17 +1291,26 @@ function renderProgression(){
 
                 playChord(chord);
 
+                flashPlaying(wrapper);
+
             };
 
 
             const remove =
                 document.createElement("button");
 
+            remove.type = "button";
+
             remove.className =
                 "delete-chord";
 
             remove.innerText =
                 "×";
+
+            remove.setAttribute(
+                "aria-label",
+                "Quitar " + chord.id + " de la progresión"
+            );
 
 
             remove.onclick = () => {
@@ -1306,12 +1409,20 @@ function playProgression(){
 
     function nextChord(){
 
+        /*
+            Si la progresión cambió
+            (se borró o se tocó otra raíz)
+            mientras sonaba, cortamos acá.
+        */
+
         if(
             progressionPosition >=
             progression.length
         ){
 
             progressionPosition = 0;
+
+            clearActiveHighlights();
 
             return;
 
@@ -1325,6 +1436,10 @@ function playProgression(){
 
 
         playChord(chord);
+
+        highlightProgressionStep(
+            progressionPosition
+        );
 
 
         progressionPosition++;
@@ -1345,6 +1460,33 @@ function playProgression(){
 
 
 /* ==================================================
+   RESALTAR PASO ACTUAL DE LA PROGRESIÓN
+================================================== */
+
+function highlightProgressionStep(index){
+
+    clearActiveHighlights();
+
+    const el = document.querySelector(
+        '.progression-chord[data-index="' + index + '"]'
+    );
+
+    if(el){
+        el.classList.add("playing");
+    }
+
+}
+
+function clearActiveHighlights(){
+
+    document
+        .querySelectorAll(".progression-chord.playing")
+        .forEach(el => el.classList.remove("playing"));
+
+}
+
+
+/* ==================================================
    STOP PROGRESIÓN
 ================================================== */
 
@@ -1359,6 +1501,8 @@ function stopProgression(){
         progressionTimer = null;
 
     }
+
+    clearActiveHighlights();
 
     stopChord();
 
@@ -1396,4 +1540,3 @@ renderProgression();
 
 </body>
 </html>
-```
